@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
 import baseApi from "@/api/baseApi";
-import { errorToast } from "@/utils/toast";
 
 interface LoginTypes {
   access_token: string;
@@ -20,7 +19,7 @@ const loginMutation = () => {
         .post("/login", body, { headers: { "Content-Type": contentType } })
         .then(({ data }) => data as unknown as LoginTypes),
 
-    onError: (e) => errorToast(e.message),
+    onError: (e) => alert(e.message),
     retry: 2,
     retryDelay: 1000,
   });

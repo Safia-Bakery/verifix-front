@@ -1,8 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { logoutHandler } from "@/store/reducers/auth";
-import { store } from "@/store/rootConfig";
 
-export const baseURL = "https://api.purchase.safiabakery.uz";
+export const baseURL = "http://10.0.0.103:8004";
+
+const logoutObj: { [key: number]: boolean } = {
+  401: true,
+  403: true,
+};
 
 const baseApi: AxiosInstance = axios.create({
   baseURL,
@@ -10,7 +13,7 @@ const baseApi: AxiosInstance = axios.create({
 
 baseApi.interceptors.request.use(
   (config) => {
-    const token = store.getState()?.auth.token;
+    const token = localStorage.getItem("token");
 
     if (!!token) {
       if (config.headers) config.headers.Authorization = `Bearer ${token}`;
@@ -27,7 +30,7 @@ baseApi.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error?.response?.status === 401) {
+    if (logoutObj[error?.response?.status]) {
       logoutUser();
     }
     return Promise.reject(error);
@@ -35,7 +38,8 @@ baseApi.interceptors.response.use(
 );
 
 function logoutUser() {
-  store?.dispatch(logoutHandler());
+  localStorage.removeItem("token");
+  window.location.reload();
 }
 
 export default baseApi;

@@ -36,3 +36,6 @@ export const handleIdx = (index: number) => {
     ? index + 1
     : index + 1 + itemsPerPage * (currentPage - 1);
 };
+export const dateTimeFormat = "DD.MM.YYYY HH:mm";
+export const dateMonthYear = "DD.MM.YYYY";
+export const yearMonthDate = "YYYY-MM-DD";

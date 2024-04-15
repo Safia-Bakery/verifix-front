@@ -1,11 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { tokenSelector } from "reducers/auth";
 import { UserType } from "@/utils/types";
 import baseApi from "@/api/baseApi";
-import { useAppSelector } from "@/store/rootConfig";
 
 export const useToken = ({ enabled = true }) => {
-  const token = useAppSelector(tokenSelector);
+  const token = localStorage.getItem("token");
   return useQuery({
     queryKey: ["me_token"],
     queryFn: () =>

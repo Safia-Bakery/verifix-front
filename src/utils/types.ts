@@ -84,3 +84,12 @@ export interface HRRequestTypes {
 export interface MainHRTypes extends BasePaginatedRes {
   items: HRRequestTypes[];
 }
+export interface DivisionType {
+  id: number;
+  division: string;
+  workers: number;
+  limit: null | number;
+}
+export interface DivisionTypes {
+  data: DivisionType[];
+}

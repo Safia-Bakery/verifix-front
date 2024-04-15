@@ -11,7 +11,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --mainBlack: #151c28;
+  --mainBlack: #333333;
   --mainGreen: #0da06a;
 }
 * {
@@ -58,7 +58,7 @@ table {
   }
 
   &.gray {
-    background: #151c2814;
+    background: #33333314;
   }
 
   &.bordered.gray {
