@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-export const baseURL = "http://10.0.0.103:8004";
+export const baseURL = "https://api.norma.safiabakery.uz";
 
 const logoutObj: { [key: number]: boolean } = {
   401: true,

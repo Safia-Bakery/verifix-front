@@ -25,13 +25,13 @@ const DateRangeBlock = () => {
 
   useEffect(() => {
     reset({
-      end: end ?? new Date(),
-      start: start ?? new Date(),
+      end,
+      start,
     });
   }, [end, start]);
 
   return (
-    <form className="flex w-min gap-3 mb-4" onSubmit={handleSubmit(handleDate)}>
+    <form className="flex w-min gap-3" onSubmit={handleSubmit(handleDate)}>
       <MainInput type="date" register={register("start")} />
       <MainInput type="date" register={register("end")} />
       <Button btnType={BtnTypes.darkBlue} type="submit" onClick={handleDate}>

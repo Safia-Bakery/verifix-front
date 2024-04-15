@@ -39,3 +39,8 @@ export const handleIdx = (index: number) => {
 export const dateTimeFormat = "DD.MM.YYYY HH:mm";
 export const dateMonthYear = "DD.MM.YYYY";
 export const yearMonthDate = "YYYY-MM-DD";
+
+export const replacer = (inputDate: string) => {
+  const [year, month, day] = inputDate.split("-");
+  return `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
+};

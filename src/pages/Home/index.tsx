@@ -1,13 +1,14 @@
 import MainInput from "@/components/BaseInputs/MainInput";
 import Container from "@/components/Container";
 import DateRangeBlock from "@/components/DateRangeBlock";
+import DownloadExcel from "@/components/DownloadExcel";
 import EmptyList from "@/components/EmptyList";
 import Loading from "@/components/Loader";
 import VirtualTable from "@/components/VirtualTable";
 import useQueryString from "@/hooks/custom/useQueryString";
 import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
-import { dateMonthYear, handleIdx } from "@/utils/helper";
+import { handleIdx, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
 import { DivisionType } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,13 +18,14 @@ import { useForm } from "react-hook-form";
 
 const Home = () => {
   const { getValues, register, reset } = useForm();
-  const start = useQueryString("start") || dayjs().format(dateMonthYear);
-  const end = useQueryString("end") || dayjs().format(dateMonthYear);
+  const start = useQueryString("start") || dayjs().format(yearMonthDate);
+  const end = useQueryString("end") || dayjs().format(yearMonthDate);
 
   const { data: divisions, isLoading } = useDivisions({
     from_date: start,
     to_date: end,
   });
+
   const { mutate } = divisionMutation();
 
   const handleIdChange = (id: number) => {
@@ -34,22 +36,7 @@ const Home = () => {
       },
       { onSuccess: () => successToast("Успешно Изменен") }
     );
-
-    console.log({
-      id,
-      limit: +getValues(`${id}`),
-    });
   };
-
-  useEffect(() => {
-    if (divisions?.data.length) {
-      const resetVals = divisions?.data?.reduce((acc: any, item) => {
-        acc[item?.id!] = item?.limit ?? 0;
-        return acc;
-      }, {});
-      reset(resetVals);
-    }
-  }, [divisions?.data]);
 
   const columns = useMemo<ColumnDef<DivisionType>[]>(
     () => [
@@ -93,6 +80,16 @@ const Home = () => {
     []
   );
 
+  useEffect(() => {
+    if (divisions?.data.length) {
+      const resetVals = divisions?.data?.reduce((acc: any, item) => {
+        acc[item?.id!] = item?.limit ?? 0;
+        return acc;
+      }, {});
+      reset(resetVals);
+    }
+  }, [divisions?.data]);
+
   if (isLoading) return <Loading />;
 
   return (
@@ -102,14 +99,17 @@ const Home = () => {
         <p className="text-center font-bold">Количество сотрудников</p>
       </div>
 
-      <div className="">
+      <div className="flex justify-between mb-4">
         <DateRangeBlock />
+        <DownloadExcel />
       </div>
-      <VirtualTable
-        columns={columns}
-        rowClassName={"text-center"}
-        data={divisions?.data!}
-      />
+      {!!divisions?.data.length && (
+        <VirtualTable
+          columns={columns}
+          rowClassName={"text-center"}
+          data={divisions?.data!}
+        />
+      )}
 
       {!isLoading && !divisions?.data.length && <EmptyList />}
     </Container>

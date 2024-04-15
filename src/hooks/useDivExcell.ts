@@ -9,25 +9,25 @@ type Params = {
   enabled?: boolean;
 };
 
-export const useDivisions = ({
+export const useDivExcell = ({
   enabled = true,
   from_date,
   to_date,
 }: Params) => {
   const token = localStorage.getItem("token");
   return useQuery({
-    queryKey: ["divisions", from_date, to_date],
+    queryKey: ["divisions_excell"],
     queryFn: () =>
       baseApi
-        .get("/divisions", {
+        .get("/divisions/excell", {
           params: {
             from_date: replacer(from_date),
             to_date: replacer(to_date),
           },
         })
-        .then(({ data: response }) => response as DivisionTypes),
+        .then(({ data: response }) => response as { file_name: string }),
     enabled: !!token && enabled,
   });
 };
 
-export default useDivisions;
+export default useDivExcell;
