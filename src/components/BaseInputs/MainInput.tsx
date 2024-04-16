@@ -45,6 +45,7 @@ const MainInput: FC<Props> = ({
       placeholder={placeholder || ""}
       ref={ref || inputRef}
       defaultValue={defaultValue}
+      // @ts-ignore
       onWheel={(e) => e.target?.blur()}
       {...register}
       {...others}
