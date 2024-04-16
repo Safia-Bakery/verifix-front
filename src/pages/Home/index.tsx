@@ -8,7 +8,7 @@ import VirtualTable from "@/components/VirtualTable";
 import useQueryString from "@/hooks/custom/useQueryString";
 import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
-import { handleIdx, yearMonthDate } from "@/utils/helper";
+import { handleIdx, logoutHandler, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
 import { DivisionType } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -93,7 +93,7 @@ const Home = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <Container className="min-h-[450px]">
+    <Container className="h-[90vh] min-h-[580px] relative">
       <div className="mx-auto mb-4">
         <h1 className="text-6xl text-center font-bold">Норма Выхода</h1>
         <p className="text-center font-bold">Количество сотрудников</p>

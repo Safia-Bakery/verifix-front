@@ -11,12 +11,14 @@ export enum EPresetTimes {
 }
 export const itemsPerPage = 50;
 
+export const tokenValue = "verifix_token";
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       gcTime: EPresetTimes.MINUTE * 10,
-      staleTime: EPresetTimes.SECOND * 10,
+      staleTime: EPresetTimes.MINUTE * 5,
       refetchOnReconnect: true,
       refetchOnMount: true,
     },
@@ -43,4 +45,9 @@ export const yearMonthDate = "YYYY-MM-DD";
 export const replacer = (inputDate: string) => {
   const [year, month, day] = inputDate.split("-");
   return `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
+};
+
+export const logoutHandler = () => {
+  localStorage.removeItem(tokenValue);
+  window.location.reload();
 };

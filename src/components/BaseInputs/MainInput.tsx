@@ -3,6 +3,8 @@ import {
   FC,
   HTMLInputTypeAttribute,
   KeyboardEventHandler,
+  useEffect,
+  useRef,
 } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import styles from "./index.module.scss";
@@ -30,12 +32,20 @@ const MainInput: FC<Props> = ({
   defaultValue,
   ...others
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  // const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+  //   if (document.activeElement === e.currentTarget) {
+  //     e.preventDefault();
+  //   }
+  // };
+
   return (
     <input
       className={`${className} ${styles.inputBox}`}
       placeholder={placeholder || ""}
-      ref={ref}
+      ref={ref || inputRef}
       defaultValue={defaultValue}
+      onWheel={(e) => e.target?.blur()}
       {...register}
       {...others}
     />

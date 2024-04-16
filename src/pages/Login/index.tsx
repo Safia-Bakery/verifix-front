@@ -8,10 +8,11 @@ import bg from "/images/login-bg.png";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { tokenValue } from "@/utils/helper";
 
 const Login = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(tokenValue);
   const [error, $error] = useState(false);
 
   const {
@@ -30,7 +31,7 @@ const Login = () => {
       { username, password },
       {
         onSuccess: (data) => {
-          localStorage.setItem("token", data.access_token);
+          localStorage.setItem(tokenValue, data.access_token);
           if (error) $error(false);
         },
         onError: () => $error(true),

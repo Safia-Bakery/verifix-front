@@ -4,7 +4,7 @@
   padding: 10px;
   background: white;
   border-radius: 15px;
-  padding-left: 90px;
+  padding-left: 120px;
   margin-top: 30px;
 
   @media (max-width: 760px) {
@@ -12,18 +12,25 @@
   }
 
   @media (min-width: 1200px) {
-    margin-top: 50px;
-    max-width: 1050px;
+    max-width: 1100px;
     padding-left: 10px;
   }
 
   @media (min-width: 1400px) {
-    margin-top: 80px;
-    max-width: 1250px;
+    max-width: 1300px;
   }
 
   @media (min-width: 1750px) {
-    margin-top: 100px;
-    max-width: 1600px;
+    max-width: 1650px;
+  }
+
+  @media (min-width: 1950px) {
+    max-width: 1850px;
+  }
+  @media (min-width: 2250px) {
+    max-width: 2150px;
+  }
+  @media (min-width: 2500px) {
+    max-width: 2400px;
   }
 }

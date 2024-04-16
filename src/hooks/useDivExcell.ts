@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DivisionTypes } from "@/utils/types";
 import baseApi from "@/api/baseApi";
-import { replacer } from "@/utils/helper";
+import { replacer, tokenValue } from "@/utils/helper";
 
 type Params = {
   from_date: string;
@@ -14,7 +14,7 @@ export const useDivExcell = ({
   from_date,
   to_date,
 }: Params) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(tokenValue);
   return useQuery({
     queryKey: ["divisions_excell"],
     queryFn: () =>

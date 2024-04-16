@@ -1,3 +1,4 @@
+import { logoutHandler, tokenValue } from "@/utils/helper";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export const baseURL = "https://api.norma.safiabakery.uz";
@@ -13,7 +14,7 @@ const baseApi: AxiosInstance = axios.create({
 
 baseApi.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(tokenValue);
 
     if (!!token) {
       if (config.headers) config.headers.Authorization = `Bearer ${token}`;
@@ -31,15 +32,10 @@ baseApi.interceptors.response.use(
   },
   (error) => {
     if (logoutObj[error?.response?.status]) {
-      logoutUser();
+      logoutHandler();
     }
     return Promise.reject(error);
   }
 );
-
-function logoutUser() {
-  localStorage.removeItem("token");
-  window.location.reload();
-}
 
 export default baseApi;
