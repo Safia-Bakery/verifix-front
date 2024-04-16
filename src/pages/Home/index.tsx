@@ -8,7 +8,7 @@ import VirtualTable from "@/components/VirtualTable";
 import useQueryString from "@/hooks/custom/useQueryString";
 import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
-import { handleIdx, logoutHandler, yearMonthDate } from "@/utils/helper";
+import { handleIdx, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
 import { DivisionType } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -72,7 +72,7 @@ const Home = () => {
         header: "Разница",
         cell: ({ row }) => (
           <span className="">
-            {(row.original.limit ?? 0) - row.original.workers}
+            {getValues(`${row.original.id}`) - row.original.workers}
           </span>
         ),
       },
@@ -93,7 +93,7 @@ const Home = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <Container className="h-[90vh] min-h-[580px] relative">
+    <Container className="h-[85vh] min-h-[580px] relative">
       <div className="mx-auto mb-4">
         <h1 className="text-6xl text-center font-bold">Норма Выхода</h1>
         <p className="text-center font-bold">Количество сотрудников</p>

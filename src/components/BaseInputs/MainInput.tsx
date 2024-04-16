@@ -33,11 +33,6 @@ const MainInput: FC<Props> = ({
   ...others
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  // const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
-  //   if (document.activeElement === e.currentTarget) {
-  //     e.preventDefault();
-  //   }
-  // };
 
   return (
     <input
