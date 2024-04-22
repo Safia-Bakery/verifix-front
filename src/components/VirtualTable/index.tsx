@@ -59,7 +59,7 @@ function VirtualTable<T>({
   return (
     <div
       ref={parentRef}
-      className={`${className} w-full bg-white h-[60vh] overflow-auto`}
+      className={`${className} w-full bg-white h-[74vh] overflow-auto`}
     >
       <div
         style={{ height: `${virtualizer.getTotalSize()}px` }}

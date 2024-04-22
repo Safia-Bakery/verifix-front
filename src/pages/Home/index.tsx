@@ -12,6 +12,7 @@ import { handleIdx, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
 import { DivisionType } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
+import cl from "classnames";
 import dayjs from "dayjs";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -93,7 +94,7 @@ const Home = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <Container className="h-[85vh] min-h-[580px] relative">
+    <Container className="h-[94vh] min-h-[580px] relative">
       <div className="mx-auto mb-4">
         <h1 className="text-6xl text-center font-bold">Норма Выхода</h1>
         <p className="text-center font-bold">Количество сотрудников</p>
@@ -106,7 +107,14 @@ const Home = () => {
       {!!divisions?.data.length && (
         <VirtualTable
           columns={columns}
-          rowClassName={"text-center"}
+          rowClassName={(row) =>
+            cl(
+              "text-center",
+              getValues(`${row.original.id}`) - row.original.workers < 0
+                ? "bg-yellow-100"
+                : ""
+            )
+          }
           data={divisions?.data!}
         />
       )}
