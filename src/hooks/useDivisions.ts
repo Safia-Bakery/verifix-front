@@ -5,24 +5,22 @@ import { replacer, tokenValue } from "@/utils/helper";
 
 type Params = {
   from_date: string;
-  to_date: string;
   enabled?: boolean;
 };
 
 export const useDivisions = ({
   enabled = true,
   from_date,
-  to_date,
 }: Params) => {
   const token = localStorage.getItem(tokenValue);
   return useQuery({
-    queryKey: ["divisions", from_date, to_date],
+    queryKey: ["divisions", from_date, ],
     queryFn: () =>
       baseApi
         .get("/divisions", {
           params: {
-            from_date: replacer(from_date),
-            to_date: replacer(to_date),
+            from_date: (from_date),
+            // to_date: replacer(to_date),
           },
         })
         .then(({ data: response }) => response as DivisionTypes),

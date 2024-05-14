@@ -3,7 +3,6 @@ import {
   FC,
   HTMLInputTypeAttribute,
   KeyboardEventHandler,
-  useEffect,
   useRef,
 } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";

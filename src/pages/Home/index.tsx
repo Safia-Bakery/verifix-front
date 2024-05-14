@@ -5,6 +5,7 @@ import DownloadExcel from "@/components/DownloadExcel";
 import EmptyList from "@/components/EmptyList";
 import Loading from "@/components/Loader";
 import VirtualTable from "@/components/VirtualTable";
+import { useNavigateParams } from "@/hooks/custom/useCustomNavigate";
 import useQueryString from "@/hooks/custom/useQueryString";
 import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
@@ -19,13 +20,17 @@ import { useForm } from "react-hook-form";
 
 const Home = () => {
   const { getValues, register, reset } = useForm();
-  const start = useQueryString("start") || dayjs().format(yearMonthDate);
-  const end = useQueryString("end") || dayjs().format(yearMonthDate);
-
-  const { data: divisions, isLoading } = useDivisions({
+  const start =
+    useQueryString("start") || dayjs(new Date()).format(yearMonthDate);
+  const {
+    data: divisions,
+    isLoading,
+    isPending,
+  } = useDivisions({
     from_date: start,
-    to_date: end,
   });
+  const shift = Number(useQueryString("shift"));
+  const navigateParams = useNavigateParams();
 
   const { mutate } = divisionMutation();
 
@@ -54,6 +59,7 @@ const Home = () => {
       {
         accessorKey: "workers",
         header: "Количество сотрудников",
+        cell: ({ row }) => row.original.workers[shift],
       },
       {
         accessorKey: "norm",
@@ -72,14 +78,21 @@ const Home = () => {
         accessorKey: "range",
         header: "Разница",
         cell: ({ row }) => (
-          <span className="">
-            {getValues(`${row.original.id}`) - row.original.workers}
+          <span>
+            {(
+              getValues(`${row.original.id}`) - row.original?.workers?.[shift]
+            ).toString()}
           </span>
         ),
       },
     ],
-    []
+    [shift]
   );
+
+  useEffect(() => {
+    if (divisions?.schedules)
+      navigateParams({ shift: Object.keys(divisions?.schedules)?.[1] });
+  }, [divisions]);
 
   useEffect(() => {
     if (divisions?.data.length) {
@@ -91,10 +104,11 @@ const Home = () => {
     }
   }, [divisions?.data]);
 
-  if (isLoading) return <Loading />;
+  // if (isLoading) return <Loading />;
 
   return (
     <Container className="h-[94vh] min-h-[580px] relative">
+      {(isLoading || isPending) && <Loading />}
       <div className="mx-auto mb-4">
         <h1 className="text-6xl text-center font-bold">Норма Выхода</h1>
         <p className="text-center font-bold">Количество сотрудников</p>
@@ -104,13 +118,13 @@ const Home = () => {
         <DateRangeBlock />
         <DownloadExcel />
       </div>
-      {!!divisions?.data.length && (
+      {!!divisions?.data?.length && (
         <VirtualTable
           columns={columns}
           rowClassName={(row) =>
             cl(
               "text-center",
-              getValues(`${row.original.id}`) - row.original.workers < 0
+              getValues(`${row.original.id}`) - row.original.workers[shift] < 0
                 ? "bg-yellow-100"
                 : ""
             )

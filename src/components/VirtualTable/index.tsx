@@ -61,10 +61,7 @@ function VirtualTable<T>({
       ref={parentRef}
       className={`${className} w-full bg-white h-[74vh] overflow-auto`}
     >
-      <div
-        style={{ height: `${virtualizer.getTotalSize()}px` }}
-        // className="overflow-x-auto"
-      >
+      <div style={{ height: `${virtualizer.getTotalSize()}px` }}>
         <table className="table table-bordered w-full">
           <thead>
             {data &&

@@ -87,9 +87,12 @@ export interface MainHRTypes extends BasePaginatedRes {
 export interface DivisionType {
   id: number;
   division: string;
-  workers: number;
+  workers: { [key:number]: number };
   limit: null | number;
 }
 export interface DivisionTypes {
   data: DivisionType[];
+  schedules: {
+    [key: number]: string
+  }
 }

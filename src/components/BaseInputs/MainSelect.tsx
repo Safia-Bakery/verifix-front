@@ -35,7 +35,7 @@ const MainSelect: FC<Props> = ({
         <>
           <option value={undefined}></option>
           {Object.entries(values)?.map((item) => (
-            <option key={item[0]} value={item[1]}>
+            <option key={item[0]} value={item[0]}>
               {item[1]}
             </option>
           ))}
