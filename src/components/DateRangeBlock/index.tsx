@@ -11,8 +11,6 @@ import MainSelect from "../BaseInputs/MainSelect";
 import useDivisions from "@/hooks/useDivisions";
 
 const DateRangeBlock = () => {
-  // const start = useQueryString("start") || dayjs().format(yearMonthDate);
-  // const end = useQueryString("end") || dayjs().format(yearMonthDate);
   const navigateParams = useNavigateParams();
   const { register, getValues, reset, setValue, handleSubmit } = useForm();
   const start =
@@ -20,6 +18,7 @@ const DateRangeBlock = () => {
   const shift = Number(useQueryString("shift"));
   const { data: divisions } = useDivisions({
     from_date: start,
+    enabled: false,
   });
 
   const handleDate = () => {

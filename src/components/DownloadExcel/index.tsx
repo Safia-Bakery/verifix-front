@@ -8,17 +8,16 @@ import Button from "../Button";
 import { BtnTypes } from "@/utils/types";
 import uploadExcelMutation from "@/hooks/mutations/uploadExcel";
 import Loading from "../Loader";
-import { successToast } from "@/utils/toast";
+import { errorToast, successToast } from "@/utils/toast";
 import useDivisions from "@/hooks/useDivisions";
 
 const DownloadExcel = () => {
-  const start = useQueryString("start") || dayjs().format(yearMonthDate);
-  const end = useQueryString("end") || dayjs().format(yearMonthDate);
+  const start =
+    useQueryString("start") || dayjs(new Date()).format(yearMonthDate);
 
   const { mutate, isPending } = uploadExcelMutation();
   const { refetch, isFetching } = useDivisions({
     from_date: start,
-    to_date: end,
     enabled: false,
   });
 
@@ -26,25 +25,12 @@ const DownloadExcel = () => {
     data: excelFile,
     isLoading: excellLoading,
     refetch: excellRefetch,
+    error,
+    isError,
   } = useDivExcell({
     from_date: start,
-    to_date: end,
     enabled: false,
   });
-
-  useEffect(() => {
-    if (excelFile && excelFile?.file_name) {
-      const url = `${baseURL}/files/${excelFile.file_name}`;
-      const a = document.createElement("a");
-      a.href = url;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  }, [excelFile]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     mutate(
@@ -54,9 +40,30 @@ const DownloadExcel = () => {
           successToast("Загружен");
           refetch();
         },
+        onError: (e) => errorToast(e.message),
       }
     );
   };
+
+  useEffect(() => {
+    if (excelFile && excelFile?.file_name) {
+      const url = `${baseURL}/files/${excelFile.file_name}`;
+      const a = document.createElement("a");
+      a.href = url;
+      // a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      console.log(excelFile?.file_name, "excelFile?.file_name inside");
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  }, [excelFile, excellLoading]);
+
+  console.log(excelFile?.file_name, "excelFile?.file_name");
+
+  useEffect(() => {
+    if (isError) errorToast(error.message);
+  }, [error, isError]);
 
   if (excellLoading || isPending || isFetching) return <Loading />;
 
