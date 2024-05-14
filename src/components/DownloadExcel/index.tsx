@@ -50,16 +50,12 @@ const DownloadExcel = () => {
       const url = `${baseURL}/files/${excelFile.file_name}`;
       const a = document.createElement("a");
       a.href = url;
-      // a.target = "_blank";
       document.body.appendChild(a);
       a.click();
-      console.log(excelFile?.file_name, "excelFile?.file_name inside");
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
   }, [excelFile, excellLoading]);
-
-  console.log(excelFile?.file_name, "excelFile?.file_name");
 
   useEffect(() => {
     if (isError) errorToast(error.message);

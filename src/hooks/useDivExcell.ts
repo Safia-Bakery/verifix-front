@@ -15,7 +15,7 @@ export const useDivExcell = ({
 Params) => {
   const token = localStorage.getItem(tokenValue);
   return useQuery({
-    queryKey: ["divisions_excell"],
+    queryKey: ["divisions_excell", from_date],
     queryFn: () =>
       baseApi
         .get("/divisions/excell", {
