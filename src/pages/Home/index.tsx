@@ -58,8 +58,18 @@ const Home = () => {
       },
       {
         accessorKey: "workers",
-        header: "Количество сотрудников",
-        cell: ({ row }) => row.original.workers[shift],
+        header: "Приход по графигу",
+        cell: ({ row }) => row.original.workers?.[shift],
+      },
+      {
+        accessorKey: "division_workers",
+        header: "Фактическийт приход",
+        cell: ({ row }) => row.original.workers?.division_workers,
+      },
+      {
+        accessorKey: "came_workers",
+        header: "Количество сотрудников за день",
+        cell: ({ row }) => row.original?.workers?.came_workers,
       },
       {
         accessorKey: "norm",
@@ -103,8 +113,6 @@ const Home = () => {
       reset(resetVals);
     }
   }, [divisions?.data]);
-
-  // if (isLoading) return <Loading />;
 
   return (
     <Container className="h-[94vh] min-h-[580px] relative">
