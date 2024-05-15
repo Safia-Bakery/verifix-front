@@ -59,12 +59,12 @@ const Home = () => {
       {
         accessorKey: "workers",
         header: "Приход по графигу",
-        cell: ({ row }) => row.original.workers?.[shift],
+        cell: ({ row }) => row.original.workers?.division_workers,
       },
       {
         accessorKey: "division_workers",
         header: "Фактическийт приход",
-        cell: ({ row }) => row.original.workers?.division_workers,
+        cell: ({ row }) => row.original.workers?.[shift],
       },
       {
         accessorKey: "came_workers",
