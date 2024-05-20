@@ -72,7 +72,7 @@ function VirtualTable<T>({
                       <th
                         key={header.id}
                         colSpan={header.colSpan}
-                        className="bg-mainBlack text-white p-2"
+                        className="bg-mainBlack text-white p-2 sticky-header"
                         style={{ width: header.getSize() }}
                       >
                         {header.isPlaceholder ? null : (
@@ -131,6 +131,23 @@ function VirtualTable<T>({
               );
             })}
           </tbody>
+
+          <tfoot>
+            {table.getFooterGroups().map((footerGroup) => (
+              <tr key={footerGroup.id} className="sticky-footer">
+                {footerGroup.headers.map((header) => (
+                  <th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </tfoot>
         </table>
       </div>
     </div>

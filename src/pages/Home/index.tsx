@@ -58,22 +58,43 @@ const Home = () => {
       },
       {
         accessorKey: "workers",
-        header: "Приход по графигу",
+        header: "Штатка",
         cell: ({ row }) => row.original.workers?.division_workers,
+        footer: (info) =>
+          info.table
+            .getPreFilteredRowModel()
+            .rows.reduce(
+              (sum, row) => sum + (row.original.workers?.division_workers || 0),
+              0
+            ),
       },
       {
         accessorKey: "division_workers",
         header: "Фактическийт приход",
         cell: ({ row }) => row.original.workers?.[shift],
+        footer: (info) =>
+          info.table
+            .getPreFilteredRowModel()
+            .rows.reduce(
+              (sum, row) => sum + (row.original.workers[shift] || 0),
+              0
+            ),
       },
-      {
-        accessorKey: "came_workers",
-        header: "Количество сотрудников за день",
-        cell: ({ row }) => row.original?.workers?.came_workers,
-      },
+      // {
+      //   accessorKey: "came_workers",
+      //   header: "Количество сотрудников за день",
+      //   cell: ({ row }) => row.original?.workers?.came_workers,
+      // },
       {
         accessorKey: "norm",
         header: "Норма Выхода",
+        footer: (info) =>
+          info.table
+            .getPreFilteredRowModel()
+            .rows.reduce(
+              (sum, row) => sum + (+getValues(`${row.original.id}`) || 0),
+              0
+            ),
         cell: ({ row }) => (
           <MainInput
             type="number"
@@ -87,6 +108,16 @@ const Home = () => {
       {
         accessorKey: "range",
         header: "Разница",
+        footer: (info) =>
+          info.table
+            .getPreFilteredRowModel()
+            .rows.reduce(
+              (sum, row) =>
+                sum +
+                (getValues(`${row.original.id}`) -
+                  row.original.workers[shift] || 0),
+              0
+            ),
         cell: ({ row }) => (
           <span>
             {(

@@ -92,3 +92,14 @@ input[type="number"] {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: white;
+}
