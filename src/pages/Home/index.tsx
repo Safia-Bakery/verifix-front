@@ -80,11 +80,6 @@ const Home = () => {
               0
             ),
       },
-      // {
-      //   accessorKey: "came_workers",
-      //   header: "Количество сотрудников за день",
-      //   cell: ({ row }) => row.original?.workers?.came_workers,
-      // },
       {
         accessorKey: "norm",
         header: "Норма Выхода",
@@ -131,8 +126,16 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (divisions?.schedules)
-      navigateParams({ shift: Object.keys(divisions?.schedules)?.[1] });
+    if (divisions?.schedules) {
+      const first = Object.entries(divisions?.schedules)?.[1];
+      const filterObj = JSON.stringify([
+        {
+          value: first?.[0],
+          label: first?.[1],
+        },
+      ]);
+      navigateParams({ shifts: filterObj });
+    }
   }, [divisions]);
 
   useEffect(() => {

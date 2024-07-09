@@ -100,3 +100,7 @@ export interface DivisionTypes {
     [key: number]: string;
   };
 }
+export interface SelectValue {
+  value?: string | number;
+  label?: string;
+}

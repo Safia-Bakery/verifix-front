@@ -1,21 +1,24 @@
-import { useNavigateParams } from "custom/useCustomNavigate";
-import dayjs from "dayjs";
-import useQueryString from "custom/useQueryString";
-import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import dayjs from "dayjs";
+import { useNavigateParams } from "custom/useCustomNavigate";
+import { useForm } from "react-hook-form";
+import useQueryString from "custom/useQueryString";
 import { yearMonthDate } from "@/utils/helper";
 import Button from "../Button";
-import { BtnTypes } from "@/utils/types";
+import { BtnTypes, SelectValue } from "@/utils/types";
 import MainInput from "../BaseInputs/MainInput";
-import MainSelect from "../BaseInputs/MainSelect";
 import useDivisions from "@/hooks/useDivisions";
+import CustomReactSelect from "../BaseInputs/CustomReactSelect";
 
 const DateRangeBlock = () => {
   const navigateParams = useNavigateParams();
   const { register, getValues, reset, setValue, handleSubmit } = useForm();
   const start =
     useQueryString("start") || dayjs(new Date()).format(yearMonthDate);
-  const shift = Number(useQueryString("shift"));
+  const shifts = useQueryString("shifts");
+
+  const statusJson = shifts ? (JSON.parse(shifts) as SelectValue[]) : undefined;
+
   const { data: divisions } = useDivisions({
     from_date: start,
     enabled: false,
@@ -41,14 +44,14 @@ const DateRangeBlock = () => {
         register={register("start")}
       />
 
-      {/* <MainInput type="date" register={register("end")} /> */}
       <Button btnType={BtnTypes.darkBlue} type="submit" onClick={handleDate}>
         Показать
       </Button>
-      <MainSelect
-        values={divisions?.schedules}
-        value={shift}
-        onChange={(shift) => navigateParams({ shift })}
+
+      <CustomReactSelect
+        data={divisions?.schedules}
+        value={statusJson}
+        onChange={(e) => navigateParams({ shifts: JSON.stringify(e) })}
       />
     </form>
   );
