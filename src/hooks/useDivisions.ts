@@ -14,7 +14,7 @@ export const useDivisions = ({ enabled = true, from_date }: Params) => {
     queryKey: ["divisions", from_date],
     queryFn: () =>
       baseApi
-        .get("/divisions", {
+        .get("/v2/divisions", {
           params: {
             from_date,
           },

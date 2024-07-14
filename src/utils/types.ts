@@ -85,20 +85,25 @@ export interface MainHRTypes extends BasePaginatedRes {
   items: HRRequestTypes[];
 }
 export interface DivisionType {
+  came_workers: number;
+  division_workers: number;
+  name: string;
   id: number;
-  division: string;
-  workers: {
-    [key: number]: number;
-    came_workers: number;
-    division_workers: number;
-  };
   limit: null | number;
 }
 export interface DivisionTypes {
-  data: DivisionType[];
-  schedules: {
-    [key: number]: string;
-  };
+  // data: DivisionType[];
+  // schedules: {
+  //   [key: number]: string;
+  // };
+
+  timesheets: {
+    divisions: DivisionType[];
+    name: string;
+    id: number;
+  }[];
+  expected_workers: number;
+  came_workers: number;
 }
 export interface SelectValue {
   value?: string | number;

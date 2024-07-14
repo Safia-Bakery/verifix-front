@@ -9,7 +9,7 @@ interface Props {
   autoFocus?: boolean;
   onFocus?: FocusEventHandler<HTMLInputElement>;
   isLoading?: boolean;
-  data?: DivisionTypes["schedules"];
+  data?: DivisionTypes["timesheets"];
   onChange?: (val: MultiValue<SelectValue>) => void;
   onMenuScrollToBottom?: () => void;
   value?: SelectValue[] | undefined;
@@ -32,16 +32,10 @@ const CustomReactSelect: FC<Props> = ({
   };
 
   useEffect(() => {
-    const items = data ? Object.entries(data) : [];
-    if (items)
+    if (data)
       $items((prev) => [
         ...prev,
-        ...items.map((item) => {
-          return {
-            value: item?.[0],
-            label: item?.[1],
-          };
-        }),
+        ...data?.map((item) => ({ value: item.id, label: item.name })),
       ]);
   }, [data]);
 

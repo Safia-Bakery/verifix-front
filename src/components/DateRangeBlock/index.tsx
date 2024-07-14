@@ -12,12 +12,12 @@ import CustomReactSelect from "../BaseInputs/CustomReactSelect";
 
 const DateRangeBlock = () => {
   const navigateParams = useNavigateParams();
-  const { register, getValues, reset, setValue, handleSubmit } = useForm();
+  const { register, getValues, reset, handleSubmit } = useForm();
   const start =
     useQueryString("start") || dayjs(new Date()).format(yearMonthDate);
   const shifts = useQueryString("shifts");
 
-  const statusJson = shifts ? (JSON.parse(shifts) as SelectValue[]) : undefined;
+  const shiftsJson = shifts ? (JSON.parse(shifts) as SelectValue[]) : undefined;
 
   const { data: divisions } = useDivisions({
     from_date: start,
@@ -36,6 +36,15 @@ const DateRangeBlock = () => {
     });
   }, [start]);
 
+  useEffect(() => {
+    const firstItem = divisions?.timesheets?.[0];
+    const firstJson = JSON.stringify([
+      { value: firstItem?.id, label: firstItem?.name },
+    ]);
+
+    if (!!firstItem) navigateParams({ shifts: firstJson });
+  }, [divisions?.timesheets]);
+
   return (
     <form className="flex w-max gap-3" onSubmit={handleSubmit(handleDate)}>
       <MainInput
@@ -49,8 +58,8 @@ const DateRangeBlock = () => {
       </Button>
 
       <CustomReactSelect
-        data={divisions?.schedules}
-        value={statusJson}
+        data={divisions?.timesheets}
+        value={shiftsJson}
         onChange={(e) => navigateParams({ shifts: JSON.stringify(e) })}
       />
     </form>

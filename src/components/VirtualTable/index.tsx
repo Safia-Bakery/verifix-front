@@ -1,5 +1,3 @@
-import useQueryString from "@/hooks/custom/useQueryString";
-import { DivisionType, SelectValue } from "@/utils/types";
 import {
   ColumnDef,
   Row,
@@ -10,11 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Fragment, ReactNode, useRef, useState } from "react";
-import MainInput from "../BaseInputs/MainInput";
-import divisionMutation from "@/hooks/mutations/division";
-import { useForm } from "react-hook-form";
-import { successToast } from "@/utils/toast";
+import { ReactNode, useRef, useState } from "react";
 
 type ReturnFunction<Tval> = (smt: Tval) => string;
 type RowClassName<T> = string | ReturnFunction<T>;
@@ -25,6 +19,7 @@ interface Props<TData> {
   className?: string;
   children?: ReactNode;
   rowClassName?: RowClassName<Row<TData>>;
+  shift?: string;
 }
 
 function VirtualTable<T>({
@@ -33,24 +28,9 @@ function VirtualTable<T>({
   className,
   children,
   rowClassName,
+  shift,
 }: Props<T>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const shifts = useQueryString("shifts");
-
-  const shiftsJson = shifts ? (JSON.parse(shifts) as SelectValue[]) : undefined;
-
-  const { mutate } = divisionMutation();
-  const { getValues, register, reset } = useForm();
-
-  const handleIdChange = (id: number) => {
-    mutate(
-      {
-        id,
-        limit: getValues(`${id}`),
-      },
-      { onSuccess: () => successToast("Успешно Изменен") }
-    );
-  };
 
   const table = useReactTable({
     data: data || [],
@@ -87,12 +67,12 @@ function VirtualTable<T>({
         <table className="table table-bordered w-full">
           <thead>
             {data &&
-              table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
+              table.getHeaderGroups().map((headerGroup, idx) => (
+                <tr key={headerGroup.id + idx}>
+                  {headerGroup.headers.map((header, hIdx) => {
                     return (
                       <th
-                        key={header.id}
+                        key={header.id + hIdx}
                         colSpan={header.colSpan}
                         className="bg-mainBlack text-white p-2 sticky-header"
                         style={{ width: header.getSize() }}
@@ -123,106 +103,61 @@ function VirtualTable<T>({
               ))}
             {children && <tr>{children}</tr>}
           </thead>
-
-          {!!shiftsJson?.length ? (
-            shiftsJson?.map((shift, idx) => (
-              <tbody key={idx}>
-                <tr className="bg-red-400">
-                  <td className="text-center text-lg font-bold" colSpan={6}>
-                    {shift.label}
-                  </td>
+          <tbody>
+            <tr>
+              <td
+                colSpan={6}
+                className="text-center bg-gray-500 text-white font-bold"
+              >
+                {shift}
+              </td>
+            </tr>
+            {virtualizer.getVirtualItems().map((virtualRow, index) => {
+              const row = rows[virtualRow.index] as Row<T>;
+              return (
+                <tr
+                  className={`${handleRowStyles(
+                    row
+                  )} border-b border-b-borderGray p-2`}
+                  key={row.id + index}
+                  style={{
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${
+                      virtualRow.start - index * virtualRow.size
+                    }px)`,
+                  }}
+                >
+                  {row.getVisibleCells().map((cell, cIdx) => {
+                    return (
+                      <td key={cell.id + cIdx} className="p-2">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
-                {virtualizer.getVirtualItems().map((virtualRow, index) => {
-                  const row = rows[virtualRow.index] as Row<DivisionType>;
+              );
+            })}
+          </tbody>
 
-                  return (
-                    <tr
-                      className={`${
-                        getValues(`${row.original.id}`) -
-                          row.original.workers[shift.value! as any] <
-                        0
-                          ? "bg-yellow-100"
-                          : ""
-                      } border-b border-b-borderGray p-2 text-center`}
-                      key={row.id}
-                      style={{
-                        height: `${virtualRow.size}px`,
-                        transform: `translateY(${
-                          virtualRow.start - index * virtualRow.size
-                        }px)`,
-                      }}
-                    >
-                      <td>{index + 1}</td>
-                      <td>{row.original?.division}</td>
-                      <td>{row.original?.workers?.division_workers}</td>
-                      <td>{row.original.workers?.[shift.value! as any]}</td>
-                      <td>
-                        <MainInput
-                          type="number"
-                          onKeyDown={(e) =>
-                            e.key === "Enter" && handleIdChange(row.original.id)
-                          }
-                          register={register(`${row.original.id}`)}
-                        />
-                      </td>
-                      <td>
-                        {" "}
-                        <span>
-                          {(
-                            getValues(`${row.original.id}`) -
-                            row.original?.workers?.[shift.value! as any]
-                          ).toString()}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            ))
-          ) : (
-            <tbody>
-              {virtualizer.getVirtualItems().map((virtualRow, index) => {
-                const row = rows[virtualRow.index] as Row<T>;
-                return (
-                  <tr
-                    className={`${handleRowStyles(
-                      row
-                    )} border-b border-b-borderGray p-2`}
-                    key={row.id}
-                    style={{
-                      height: `${virtualRow.size}px`,
-                      transform: `translateY(${
-                        virtualRow.start - index * virtualRow.size
-                      }px)`,
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td key={cell.id} className="p-2">
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          )}
-
-          {/* <tfoot>
-            {table.getFooterGroups().map((footerGroup) => (
-              <tr key={footerGroup.id} className="sticky-footer">
-                {shiftsJson?.map((shift, idx) =>
-                  <th>
-
+          <tfoot>
+            {table.getFooterGroups().map((footerGroup, idx) => (
+              <tr key={footerGroup.id + idx} className="sticky-footer">
+                {footerGroup.headers.map((header, fhIdx) => (
+                  <th key={header.id + fhIdx}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext()
+                        )}
                   </th>
-                )}
+                ))}
               </tr>
             ))}
-          </tfoot> */}
+          </tfoot>
         </table>
       </div>
     </div>

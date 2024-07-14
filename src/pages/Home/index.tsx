@@ -11,7 +11,7 @@ import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
 import { handleIdx, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
-import { DivisionType } from "@/utils/types";
+import { DivisionType, DivisionTypes, SelectValue } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
 import cl from "classnames";
 import dayjs from "dayjs";
@@ -29,7 +29,8 @@ const Home = () => {
   } = useDivisions({
     from_date: start,
   });
-  const shift = Number(useQueryString("shift"));
+  const shiftJson = useQueryString("shifts");
+  const shifts = (shiftJson && (JSON.parse(shiftJson) as SelectValue[])) || [];
   const navigateParams = useNavigateParams();
 
   const { mutate } = divisionMutation();
@@ -53,35 +54,35 @@ const Home = () => {
       },
 
       {
-        accessorKey: "division",
+        accessorKey: "name",
         header: "Отдел",
       },
       {
-        accessorKey: "workers",
+        accessorKey: "came_workers",
         header: "Штатка",
-        cell: ({ row }) => row.original.workers?.division_workers,
+        cell: ({ row }) => row.original?.came_workers,
         footer: (info) =>
           info.table
             .getPreFilteredRowModel()
             .rows.reduce(
-              (sum, row) => sum + (row.original.workers?.division_workers || 0),
+              (sum, row) => sum + (row.original?.came_workers || 0),
               0
             ),
       },
       {
         accessorKey: "division_workers",
         header: "Фактическийт приход",
-        cell: ({ row }) => row.original.workers?.[shift],
+        cell: ({ row }) => row.original.division_workers,
         footer: (info) =>
           info.table
             .getPreFilteredRowModel()
             .rows.reduce(
-              (sum, row) => sum + (row.original.workers[shift] || 0),
+              (sum, row) => sum + (row.original.division_workers || 0),
               0
             ),
       },
       {
-        accessorKey: "norm",
+        accessorKey: "id",
         header: "Норма Выхода",
         footer: (info) =>
           info.table
@@ -101,7 +102,7 @@ const Home = () => {
         ),
       },
       {
-        accessorKey: "range",
+        accessorKey: "came_workers",
         header: "Разница",
         footer: (info) =>
           info.table
@@ -109,48 +110,50 @@ const Home = () => {
             .rows.reduce(
               (sum, row) =>
                 sum +
-                (getValues(`${row.original.id}`) -
-                  row.original.workers[shift] || 0),
+                (getValues(`${row.original.id}`) - row.original.came_workers ||
+                  0),
               0
             ),
         cell: ({ row }) => (
           <span>
             {(
-              getValues(`${row.original.id}`) - row.original?.workers?.[shift]
+              getValues(`${row.original.id}`) - row.original?.came_workers
             ).toString()}
           </span>
         ),
       },
     ],
-    [shift]
+    []
   );
 
-  useEffect(() => {
-    if (divisions?.schedules) {
-      const first = Object.entries(divisions?.schedules)?.[1];
-      const filterObj = JSON.stringify([
-        {
-          value: first?.[0],
-          label: first?.[1],
-        },
-      ]);
-      navigateParams({ shifts: filterObj });
-    }
-  }, [divisions]);
+  // useEffect(() => {
+  //   if (!!divisions?.timesheets?.length) {
+  //     navigateParams({ shifts: 0 });
+  //   }
+  // }, [divisions?.timesheets]);
+
+  const getList = useMemo(() => {
+    return divisions?.timesheets?.filter((item) =>
+      shifts?.find((shift) => item.id === shift.value)
+    );
+  }, [divisions?.timesheets, shifts]);
 
   useEffect(() => {
-    if (divisions?.data.length) {
-      const resetVals = divisions?.data?.reduce((acc: any, item) => {
-        acc[item?.id!] = item?.limit ?? 0;
-        return acc;
-      }, {});
+    if (divisions?.timesheets?.length) {
+      const resetVals = divisions?.timesheets?.map((timesheet) =>
+        timesheet?.divisions?.reduce((acc: any, item) => {
+          acc[item?.id!] = item?.limit ?? 0;
+          return acc;
+        }, {})
+      );
       reset(resetVals);
     }
-  }, [divisions?.data]);
+  }, [divisions?.timesheets]);
+
+  if (isLoading || isPending) return <Loading />;
 
   return (
-    <Container className="h-[94vh] min-h-[580px] relative">
-      {(isLoading || isPending) && <Loading />}
+    <Container className="h-min min-h-[580px] relative">
       <div className="mx-auto mb-4">
         <h1 className="text-6xl text-center font-bold">Норма Выхода</h1>
         <p className="text-center font-bold">Количество сотрудников</p>
@@ -160,22 +163,24 @@ const Home = () => {
         <DateRangeBlock />
         <DownloadExcel />
       </div>
-      {!!divisions?.data?.length && (
+      {getList?.map((list, idx) => (
         <VirtualTable
+          shift={list.name}
+          key={list.id + idx}
           columns={columns}
           rowClassName={(row) =>
             cl(
               "text-center",
-              getValues(`${row.original.id}`) - row.original.workers[shift] < 0
+              getValues(`${row.original}`) - row.original?.came_workers < 0
                 ? "bg-yellow-100"
                 : ""
             )
           }
-          data={divisions?.data!}
+          data={list.divisions}
         />
-      )}
+      ))}
 
-      {!isLoading && !divisions?.data.length && <EmptyList />}
+      {!isLoading && !getList?.length && <EmptyList />}
     </Container>
   );
 };
