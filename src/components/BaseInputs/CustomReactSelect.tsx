@@ -1,5 +1,5 @@
 import { FC, FocusEventHandler, useEffect } from "react";
-import Select, { MultiValue, SingleValue } from "react-select";
+import Select, { MultiValue } from "react-select";
 import { useState } from "react";
 import { DivisionTypes, SelectValue } from "@/utils/types";
 

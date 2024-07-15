@@ -92,11 +92,6 @@ export interface DivisionType {
   limit: null | number;
 }
 export interface DivisionTypes {
-  // data: DivisionType[];
-  // schedules: {
-  //   [key: number]: string;
-  // };
-
   timesheets: {
     divisions: DivisionType[];
     name: string;

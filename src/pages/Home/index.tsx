@@ -11,7 +11,7 @@ import divisionMutation from "@/hooks/mutations/division";
 import useDivisions from "@/hooks/useDivisions";
 import { handleIdx, yearMonthDate } from "@/utils/helper";
 import { successToast } from "@/utils/toast";
-import { DivisionType, DivisionTypes, SelectValue } from "@/utils/types";
+import { DivisionType, SelectValue } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
 import cl from "classnames";
 import dayjs from "dayjs";
@@ -31,7 +31,6 @@ const Home = () => {
   });
   const shiftJson = useQueryString("shifts");
   const shifts = (shiftJson && (JSON.parse(shiftJson) as SelectValue[])) || [];
-  const navigateParams = useNavigateParams();
 
   const { mutate } = divisionMutation();
 
@@ -125,12 +124,6 @@ const Home = () => {
     ],
     []
   );
-
-  // useEffect(() => {
-  //   if (!!divisions?.timesheets?.length) {
-  //     navigateParams({ shifts: 0 });
-  //   }
-  // }, [divisions?.timesheets]);
 
   const getList = useMemo(() => {
     return divisions?.timesheets?.filter((item) =>
